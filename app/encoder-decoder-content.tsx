@@ -9,26 +9,24 @@ import { Label } from "@/components/ui/label"
 import { decode, encode } from "./encoding"
 import { EmojiSelector } from "@/components/emoji-selector"
 import { ALPHABET_LIST, EMOJI_LIST } from "./emoji"
+import { SteganoReveal } from "@/components/stegano-reveal"
 
 export function Base64EncoderDecoderContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  // Read mode from URL parameters, other state stored locally
   const mode = searchParams.get("mode") || "encode"
   const [inputText, setInputText] = useState("")
   const [selectedEmoji, setSelectedEmoji] = useState("😀")
   const [outputText, setOutputText] = useState("")
   const [errorText, setErrorText] = useState("")
 
-  // Update URL when mode changes
   const updateMode = (newMode: string) => {
     const params = new URLSearchParams(searchParams)
     params.set("mode", newMode)
     router.replace(`?${params.toString()}`)
   }
 
-  // Convert input whenever it changes
   useEffect(() => {
     try {
       const isEncoding = mode === "encode"
@@ -43,10 +41,9 @@ export function Base64EncoderDecoderContent() {
 
   const handleModeToggle = (checked: boolean) => {
     updateMode(checked ? "encode" : "decode")
-    setInputText("") // Clear input text when mode changes
+    setInputText("")
   }
 
-  // Handle initial URL state
   useEffect(() => {
     if (!searchParams.has("mode")) {
       updateMode("encode")
@@ -57,7 +54,10 @@ export function Base64EncoderDecoderContent() {
 
   return (
     <CardContent className="space-y-4">
-      <p>This tool allows you to encode a hidden message into an emoji or alphabet letter. You can copy and paste text with a hidden message in it to decode the message.</p>
+      <p>
+        This tool allows you to encode a hidden message into an emoji or alphabet letter.
+        You can copy and paste text with a hidden message in it to decode the message.
+      </p>
 
       <div className="flex items-center justify-center space-x-2">
         <Label htmlFor="mode-toggle">Decode</Label>
@@ -70,6 +70,7 @@ export function Base64EncoderDecoderContent() {
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
         className="min-h-[100px]"
+        aria-label={isEncoding ? "Texto para codificar" : "Emoji com mensagem oculta para decodificar"}
       />
 
       <div className="font-bold text-sm">Pick an emoji</div>
@@ -88,14 +89,36 @@ export function Base64EncoderDecoderContent() {
         disabled={!isEncoding}
       />
 
-      <Textarea
-        placeholder={`${isEncoding ? "Encoded" : "Decoded"} output`}
-        value={outputText}
-        readOnly
-        className="min-h-[100px]"
-      />
+      <div
+        role="region"
+        aria-label="Resultado da codificação"
+      >
+        <Textarea
+          placeholder={`${isEncoding ? "Encoded" : "Decoded"} output`}
+          value={outputText}
+          readOnly
+          className="min-h-[100px]"
+          aria-label={
+            isEncoding
+              ? `Emoji com mensagem codificada: ${outputText.slice(0, 2)}`
+              : `Texto decodificado: ${outputText}`
+          }
+        />
 
-      {errorText && <div className="text-red-500 text-center">{errorText}</div>}
+        {isEncoding && outputText && (
+          <SteganoReveal encodedText={outputText} label="Output codificado" />
+        )}
+        
+        {!isEncoding && outputText && (
+          <SteganoReveal encodedText={inputText} label="Input decodificado" />
+        )}
+      </div>
+
+      {errorText && (
+        <div className="text-red-500 text-center" role="alert">
+          {errorText}
+        </div>
+      )}
     </CardContent>
   )
 }
