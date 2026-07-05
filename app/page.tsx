@@ -4,17 +4,29 @@ import { Base64EncoderDecoderContent } from "./encoder-decoder-content"
 
 export default function EncoderDecoder() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+      <Card className="w-full max-w-lg">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Hide a message in an emoji</CardTitle>
+          <CardTitle className="text-center text-2xl">
+            Hide a message in an emoji
+          </CardTitle>
         </CardHeader>
-        <Suspense fallback={<CardContent>Loading...</CardContent>}>
+        <Suspense fallback={<CardContent><p className="text-center text-gray-500">Loading...</p></CardContent>}>
           <Base64EncoderDecoderContent />
         </Suspense>
-        <div className="text-center my-2">
-          <a href="https://github.com/paulgb/emoji-encoder" target="_blank" rel="noopener noreferrer" className="text-sm text-blue-800 hover:text-blue-900">Source on GitHub</a>
-        </div>
+        <CardContent>
+          <p className="text-xs text-center text-gray-400 mt-4">
+            <a
+              href="https://github.com/paulgb/emoji-encoder"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-600"
+              aria-label="Código fonte no GitHub — MIT License"
+            >
+              Source on GitHub
+            </a>
+          </p>
+        </CardContent>
       </Card>
     </div>
   )
