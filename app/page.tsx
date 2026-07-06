@@ -17,7 +17,7 @@ export default function EncoderDecoder() {
         <CardContent>
           <p className="text-xs text-center text-gray-400 mt-4">
             <a
-              href="https://github.com/paulgb/emoji-encoder"
+              href="https://github.com/FellipFB/ai-accessibility-steganography/"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:text-gray-600"
